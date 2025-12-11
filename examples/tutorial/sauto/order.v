@@ -25,6 +25,8 @@ Definition eq_dec {A} {dto : DecTotalOrder A} : forall x y : A, {x = y}+{x <> y}
      as discriminees in match expressions *)
   - sdestruct (leb y x).
     + auto using leb_antisym.
+      (** RV yoshihiro503: unsolved ↑*)
+      now left; apply leb_antisym.
     + (* firstorder. *)
       (* easy. *)
       (* eauto. *)

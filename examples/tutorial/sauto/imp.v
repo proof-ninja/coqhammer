@@ -52,7 +52,7 @@ Fixpoint bval (s : state) (e : bexpr) :=
   | Bval b => b
   | Bnot e1 => negb (bval s e1)
   | Band e1 e2 => bval s e1 && bval s e2
-  | Bless a1 a2 => aval s a1 <? aval s a2
+  | Bless a1 a2 => (aval s a1 <? aval s a2)%nat
   end.
 
 Inductive cmd :=

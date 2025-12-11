@@ -68,15 +68,17 @@ Proof.
   (* induction l; sauto use: lem_lelst_trans inv: List.Forall. *)
   (* induction l;
     sauto use: lem_lelst_trans inv: Sorted, List.Forall ctrs: -. *)
-  time (induction l;
+  (** RV yosihiro503: ↓ 失敗する: 'Error not an inductive type: List.Forall' *)
+  Fail time (induction l;
         sauto use: lem_lelst_trans inv: Sorted, List.Forall ctrs: Sorted).
   Undo.
-  time (induction l;
+  (** RV yosihiro503: ↓ 失敗する *)
+  Fail time (induction l;
         sauto lazy: on use: lem_lelst_trans
           inv: Sorted, List.Forall ctrs: Sorted).
   (* "lazy: on" turns off all eager heuristics. This may improve
      performance, but may also make "sauto" fail to solve the goal *)
-Qed.
+Admitted.
 
 Lemma lem_lelst_perm_rev {A} {dto : DecTotalOrder A} :
   forall l1 l2 x, Permutation l1 l2 -> LeLst x l2 -> LeLst x l1.

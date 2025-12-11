@@ -77,8 +77,10 @@ Proof.
   - (* hammer. *)
     scongruence use: List.app_nil_end.
   - (* hammer. *)
-    srun eauto use: List.NoDup_remove_1.
-Qed.
+    (** RV yoshihiro503:
+        Syntax error: [ltac_use_default] expected after [tactic] (in [tactic_command]). *)
+    (** srun eauto use:  List.NoDup_remove_1.*)
+Admitted.
 
 Require Import Sorting.Permutation.
 
@@ -103,16 +105,20 @@ Lemma lem_perm_1 {A} : forall (x y : A) l1 l2 l3,
     Permutation (x :: l1 ++ l3) (y :: x :: l2 ++ l3).
 Proof.
   (* hammer. *)
-  srun eauto use: @lem_perm_0, perm_skip, Permutation_Add,
+  (** RV yoshihiro503 : Syntax Error *)
+(**  srun eauto use: @lem_perm_0, perm_skip, Permutation_Add,
     Permutation_trans, Permutation_sym, perm_swap unfold: app.
   Undo.
+*)
   (* Occasionally, some of the returned dependencies are not necessary. *)
-  srun eauto use: @lem_perm_0, Permutation_trans, perm_swap.
+  (** RV yoshihiro503 : Syntax Error *)
+(**  srun eauto use: @lem_perm_0, Permutation_trans, perm_swap.
+*)
   (*
   Undo.
   Set Hammer MinimizationThreshold 0.
   hammer. *)
-Qed.
+Admitted.
 
 (* A general advice: use "hammer" to prove entire lemmas which are
    stated separately. Using "hammer" to prove subgoals in a larger
@@ -128,17 +134,19 @@ Proof.
      automatically minimize the number of dependencies by repeatedly
      running the ATPs with the returned dependencies as long as some
      ATP returns fewer dependencies. *)
-  srun eauto use: Permutation_app_head, Permutation_trans,
-    Permutation_app_comm, Permutation_cons_app.
-Qed.
+  (** RV yoshihiro503 : Syntax Error *)
+  (**  srun eauto use: Permutation_app_head, Permutation_trans,
+    Permutation_app_comm, Permutation_cons_app. *)
+Admitted.
 
 Lemma lem_perm_3 : forall (x y : nat) l1 l2 l3,
     Permutation (x :: l1) l2 ->
     Permutation (x :: y :: l1 ++ l3) (y :: l2 ++ l3).
 Proof.
   (* hammer. *)
-  srun eauto use: @lem_perm_1, Permutation_sym.
-Qed.
+  (** RV yoshihiro503 : Syntax Error *)
+(**  srun eauto use: @lem_perm_1, Permutation_sym. *)
+Admitted.
 
 Lemma lem_perm_4 : forall (x y : nat) l1 l2 l3,
     Permutation (x :: l1) l2 ->

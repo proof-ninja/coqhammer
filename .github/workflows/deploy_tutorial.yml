@@ -1,0 +1,63 @@
+name: Deploy tutorial
+
+on:
+  push:
+    branches: ["coqtokyo"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-html:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: examples/tutorial
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set-up OCaml
+        uses: ocaml/setup-ocaml@v3
+        with:
+          ocaml-compiler: 4.14
+          opam-repositories: |
+            coq-released: https://coq.inria.fr/opam/released
+            default: https://github.com/ocaml/opam-repository.git
+
+      - name: Set-up coq-hammer
+        run: opam install -y . coq.9.0.0 coq-hammer
+
+      - name: Build tutorial
+        run: |
+          pwd
+          ls -la
+          opam exec -- rocq makefile -f _CoqProject -o Makefile
+          opam exec -- make
+          opam exec -- make html
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'examples/tutorial/html/'
+
+  deploy:
+    needs: build-html
+    if: github.ref == 'refs/heads/coqtokyo'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

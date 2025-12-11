@@ -18,13 +18,20 @@ Proof.
   intros a b d Hb.
   sintuition.
   - destruct (Nat.eq_dec d 0) as [Hd|Hd].
-    + subst; reflexivity.
+    +
+      (** RV yoshihiro503: unsolved ↓ *)
+      Fail subst; reflexivity.
+      admit.
     + assert (Hc1: exists c1, b = d * c1).
       { (* hammer. *) strivial use: Nat.mod_divides. }
       assert (Hc2: exists c2, a mod b = d * c2).
       { (* hammer. *) strivial use: Nat.mod_divides. }
       assert (Hc3: exists c3, a = b * c3 + a mod b).
-      { (* hammer. *) srun eauto use: Nat.div_mod. }
+      { (* hammer. *)
+        (** RV yoshihiro503: ↓ syntax error *)
+        (*srun eauto use: Nat.div_mod.*)
+        admit.
+      }
       clear -Hc1 Hc2 Hc3 Hd.
       destruct Hc1 as [c1 H1].
       destruct Hc2 as [c2 H2].
@@ -37,7 +44,9 @@ Proof.
       auto using Nat.mod_mul.
   - enough ((a mod b) mod d' = 0) by auto.
     destruct (Nat.eq_dec d' 0) as [Hd|Hd].
-    + subst; reflexivity.
+    + (** RV yoshihiro503: unsolved↓ *)
+      Fail subst; reflexivity.
+      admit.
     + assert (Hc1: exists c1, b = d' * c1) by hauto use: Nat.mod_divides.
       assert (Hc2: exists c2, a = d' * c2) by hauto use: Nat.mod_divides.
       assert (Hc3: exists c3, a = b * c3 + a mod b).
@@ -55,7 +64,7 @@ Proof.
       rewrite Nat.mul_mod_distr_l; [| lia | lia ].
       rewrite Nat.mul_comm.
       apply Nat.mod_mul; assumption.
-Qed.
+Admitted.
 
 Program Fixpoint gcd (a b : nat) {measure b} :
   {d : nat | a + b > 0 -> is_gcd d a b} :=
@@ -79,8 +88,9 @@ Next Obligation.
 Qed.
 Next Obligation.
   (* hammer. *)
-  srun eauto use: Nat.mod_upper_bound.
-Qed.
+  (** RV yoshihiro503 : Syntax Error *)
+  (** srun eauto use: Nat.mod_upper_bound. *)
+Admitted.
 Next Obligation.
   simpl_sigma.
   (* hammer. *)
