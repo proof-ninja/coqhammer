@@ -18,21 +18,21 @@ Arguments leb_trans {A _}.
 Definition eq_dec {A} {dto : DecTotalOrder A} : forall x y : A, {x = y}+{x <> y}.
   intros x y.
   sdestruct (leb x y).
-  (* The "sdestruct" tactic from the Tactics module destructs boolean
+  (** The "sdestruct" tactic from the Tactics module destructs boolean
      terms in the "right" way *)
-  (* "sauto" tries to invert/destruct only the hypotheses - it will
+  (** "sauto" tries to invert/destruct only the hypotheses - it will
      not normally try to eliminate composite terms unless they occur
      as discriminees in match expressions *)
   - sdestruct (leb y x).
     + auto using leb_antisym.
       (** RV yoshihiro503: unsolved ↑*)
       now left; apply leb_antisym.
-    + (* firstorder. *)
-      (* easy. *)
-      (* eauto. *)
-      (* right. intro. subst. contradiction. *)
+    + (** firstorder. *)
+      (** easy. *)
+      (** eauto. *)
+      (** right. intro. subst. contradiction. *)
       sauto.
-      (* This is a simple proof, but standard Coq automation tactics
+      (** This is a simple proof, but standard Coq automation tactics
          can't find it because it requires a combination of proof
          search with equality reasoning. *)
   - sdestruct (leb y x).
@@ -40,12 +40,12 @@ Definition eq_dec {A} {dto : DecTotalOrder A} : forall x y : A, {x = y}+{x <> y}
     + destruct (leb_total_dec x y); auto.
 Defined.
 
-(* "sauto" searches for proofs in intuitionistic logic, which can
+(** "sauto" searches for proofs in intuitionistic logic, which can
    equivalently be seen as program synthesis. "eq_dec" is a certified
    computable function which decides whether the equality holds or
    not. *)
 
-Require Import Recdef. (* for Function *)
+Require Import Recdef. (** for Function *)
 
 Function lexb {A} {dto : DecTotalOrder A} (l1 l2 : list A) : bool :=
   match l1 with
@@ -67,12 +67,12 @@ Proof.
   - induction x; sauto.
   - intros x y.
     functional induction (lexb x y).
-    + (* sauto. *)
+    + (** sauto. *)
       sauto inv: list.
     + sauto.
     + sauto.
-    + (* sauto. *)
-      (* ssimpl inv: -. *)
+    + (** sauto. *)
+      (** ssimpl inv: -. *)
       sauto inv: - use: leb_antisym.
   - intros x y.
     functional induction (lexb x y); sauto.

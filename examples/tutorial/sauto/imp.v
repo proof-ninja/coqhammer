@@ -1,4 +1,4 @@
-(* This file contains a definition of a simple imperative programming
+(** This file contains a definition of a simple imperative programming
    language together with its operational semantics and a definition
    of Hoare logic for it. Most definitions and lemma statements were
    translated into Coq from Isabelle/HOL statements present in the
@@ -75,7 +75,7 @@ Definition state_subst (s : state) (x : string) (a : aexpr) : state :=
 
 Notation "s [ x := a ]" := (state_subst s x a) (at level 5).
 
-(* Big-step operational semantics *)
+(** Big-step operational semantics *)
 
 Inductive BigStep : cmd -> state -> state -> Prop :=
 | NopSem : forall s, BigStep Nop s s
@@ -104,7 +104,7 @@ Proof.
   time (induction 1; sauto lazy: on quick: on brefl: on).
 Qed.
 
-(* Program equivalence *)
+(** Program equivalence *)
 
 Definition equiv_cmd (c1 c2 : cmd) :=
   forall s s', c1 >> s ==> s' <-> c2 >> s ==> s'.
@@ -131,12 +131,12 @@ Proof.
   time sauto unfold: equiv_cmd.
   Undo.
   time sauto lazy: on unfold: equiv_cmd.
-  (* "lazy: on" turns off all eager heuristics *)
-  (* This may sometimes speed up "sauto" noticeably, but sometimes it
+  (** "lazy: on" turns off all eager heuristics *)
+  (** This may sometimes speed up "sauto" noticeably, but sometimes it
      may prevent "sauto" from solving the goal. *)
-  (* To increase the performance of "sauto" you may need to fiddle
+  (** To increase the performance of "sauto" you may need to fiddle
      with various options. *)
-  (* Things to try which commonly result in speed increase (if "sauto"
+  (** Things to try which commonly result in speed increase (if "sauto"
      can still solve the goal):
      - "lazy: on" ("l: on")
      - "quick: on" ("q: on") - a combination of various options which
@@ -175,7 +175,7 @@ Proof.
   Undo.
   time (destruct (bval s b1) eqn:?; destruct (bval s b2) eqn:?;
                  sauto quick: on inv: BigStep ctrs: BigStep).
-  (* "quick: on" sets various options in a way which typically makes
+  (** "quick: on" sets various options in a way which typically makes
      "sauto" weaker but faster. "quato" is "hauto" with "quick: on", a
      smaller cost limit and a different leaf solver. See
      https://github.com/lukaszcz/coqhammer#Sauto for details.  *)
@@ -188,9 +188,9 @@ Proof.
   Undo.
   time (destruct (bval s b1) eqn:?; destruct (bval s b2) eqn:?;
                  sauto lq: on inv: BigStep ctrs: BigStep).
-  (* "lq: on" is an abbreviation for "lazy: on quick: on" *)
-  (* "lazy:" may be abbreviated to "l:" *)
-  (* "quick:" may be abbreviated to "q:" *)
+  (** "lq: on" is an abbreviation for "lazy: on quick: on" *)
+  (** "lazy:" may be abbreviated to "l:" *)
+  (** "quick:" may be abbreviated to "q:" *)
 Qed.
 
 Lemma lem_unfold_while : forall b c,
@@ -199,11 +199,11 @@ Proof.
   time sauto unfold: equiv_cmd.
   Undo.
   time sauto q: on unfold: equiv_cmd.
-  (* "quick: on" does not result in significant speed increase this
+  (** "quick: on" does not result in significant speed increase this
      time *)
   Undo.
   time sauto l: on unfold: equiv_cmd.
-  (* "lazy: on" does *)
+  (** "lazy: on" does *)
 Qed.
 
 Lemma lem_while_cong_aux : forall b c c' s s',
@@ -220,7 +220,7 @@ Proof.
   hauto use: lem_while_cong_aux unfold: equiv_cmd.
 Qed.
 
-(* Small-step operational semantics *)
+(** Small-step operational semantics *)
 
 Inductive SmallStep : cmd * state -> cmd * state -> Prop :=
 | AssignSemS : forall x a s, SmallStep (x <- a, s) (Nop, s[x := a])
@@ -248,7 +248,7 @@ Proof.
   induction 1; sauto lq: on brefl: on.
 Qed.
 
-(* Equivalence between big-step and small-step operational semantics *)
+(** Equivalence between big-step and small-step operational semantics *)
 
 Lemma lem_star_seq2 : forall c1 c2 s c1' s',
   (c1, s) -->* (c1', s') -> (c1;; c2, s) -->* (c1';; c2, s').
@@ -316,10 +316,10 @@ Proof.
   time (induction 1; sauto use: lem_small_to_big_aux_2).
   Undo.
   time (induction 1; sauto l: on use: lem_small_to_big_aux_2).
-  (* "l: on" slightly improves performance *)
-  (* Undo.
+  (** "l: on" slightly improves performance *)
+  (** Undo.
   induction 1; sauto q: on use: lem_small_to_big_aux_2. *)
-  (* But "q: on" prevents "sauto" from solving the goal. *)
+  (** But "q: on" prevents "sauto" from solving the goal. *)
 Qed.
 
 Corollary cor_big_iff_small :
@@ -328,7 +328,7 @@ Proof.
   sauto use: lem_small_to_big, lem_big_to_small.
 Qed.
 
-(* Hoare triples *)
+(** Hoare triples *)
 
 Definition assn := state -> Prop.
 
@@ -337,7 +337,7 @@ Definition HoareValid (P : assn) (c : cmd) (Q : assn): Prop :=
 
 Notation "|= {{ P }} c {{ Q }}" := (HoareValid P c Q).
 
-(* Hoare logic *)
+(** Hoare logic *)
 
 Definition entails (P Q : assn) : Prop := forall s, P s -> Q s.
 
@@ -389,7 +389,7 @@ Proof.
   sauto use: lem_hoare_weaken_post unfold: entails.
 Qed.
 
-(* Soundness of Hoare logic *)
+(** Soundness of Hoare logic *)
 
 Theorem thm_hoare_correct : forall P Q c,
     |- {{P}} c {{Q}} -> |= {{P}} c {{Q}}.

@@ -38,7 +38,7 @@ Proof.
   sauto.
 Qed.
 
-(* "LeLst x l" holds if "x" is smaller or equal to all elements in "l" *)
+(** "LeLst x l" holds if "x" is smaller or equal to all elements in "l" *)
 Definition LeLst {A} {dto : DecTotalOrder A} (x : A) :=
   List.Forall (leb x).
 
@@ -55,18 +55,18 @@ Proof.
   Undo.
   induction l; sintuition.
   Undo.
-  (* simplification tactics: sintuition, qsimpl, ssimpl *)
+  (** simplification tactics: sintuition, qsimpl, ssimpl *)
   induction l; qsimpl.
   Undo.
-  (* From "Sorted (a :: l)" it follows that "LeLst a l" by "H2". *)
-  (* Because "leb x l", "LeLst x (a :: l)" follows from "LeLst a l" by
+  (** From "Sorted (a :: l)" it follows that "LeLst a l" by "H2". *)
+  (** Because "leb x l", "LeLst x (a :: l)" follows from "LeLst a l" by
      lemma "lem_lelst_trans" *)
   time (induction l; sauto use: lem_lelst_trans).
   Undo.
-  (* induction l; sauto use: lem_lelst_trans inv: Sorted, List.Forall. *)
-  (* induction l; sauto use: lem_lelst_trans inv: Sorted. *)
-  (* induction l; sauto use: lem_lelst_trans inv: List.Forall. *)
-  (* induction l;
+  (** induction l; sauto use: lem_lelst_trans inv: Sorted, List.Forall. *)
+  (** induction l; sauto use: lem_lelst_trans inv: Sorted. *)
+  (** induction l; sauto use: lem_lelst_trans inv: List.Forall. *)
+  (** induction l;
     sauto use: lem_lelst_trans inv: Sorted, List.Forall ctrs: -. *)
   (** RV yosihiro503: ↓ 失敗する: 'Error not an inductive type: List.Forall' *)
   Fail time (induction l;
@@ -76,7 +76,7 @@ Proof.
   Fail time (induction l;
         sauto lazy: on use: lem_lelst_trans
           inv: Sorted, List.Forall ctrs: Sorted).
-  (* "lazy: on" turns off all eager heuristics. This may improve
+  (** "lazy: on" turns off all eager heuristics. This may improve
      performance, but may also make "sauto" fail to solve the goal *)
 Admitted.
 
@@ -101,7 +101,7 @@ Lemma lem_sorted_concat_1 {A} {dto : DecTotalOrder A} :
 Proof.
   intros.
   rewrite lem_lelst_sorted in *.
-  (* sauto db: lelst inv: -. *)
+  (** sauto db: lelst inv: -. *)
   split.
   simp_hyps.
   eapply lem_lelst_perm_rev; [eassumption|].
@@ -111,7 +111,7 @@ Proof.
   eauto using lem_lelst_trans.
   eapply lem_lelst_trans; eassumption.
 
-  (* Here, "sauto" needs to apply a constructor of "List.Forall",
+  (** Here, "sauto" needs to apply a constructor of "List.Forall",
      which works on a goal with head "LeLst", but then creates a goal
      with head "List.Forall" which does not resolve with the
      "lem_lelst_trans" lemma according to how "eauto" performs
@@ -122,7 +122,7 @@ Proof.
   intros.
   rewrite lem_lelst_sorted in *.
   sauto use: lem_lelst_trans, lem_lelst_perm_rev, lem_lelst_app inv: -.
-  (* "use:" adds the given lemmas to the context, while for lemmas
+  (** "use:" adds the given lemmas to the context, while for lemmas
      from a hint database only actions associated with the hints are
      performed in exactly the same way as by "eauto" *)
 Qed.
@@ -173,10 +173,10 @@ Next Obligation.
 Qed.
 Next Obligation.
   sauto use: lem_sorted_concat_1.
-  (* What happened here? *)
+  (** What happened here? *)
   Undo.
   simpl_sigma.
-  (* Heuristic simplifications for sigma types are performed by
+  (** Heuristic simplifications for sigma types are performed by
      default (controlled by the "sig:" option) *)
   sauto use: lem_sorted_concat_1.
 Qed.
@@ -189,11 +189,11 @@ Qed.
 Next Obligation.
   split.
   - sauto use: lem_sorted_concat_2.
-  - (* sauto use: List.app_comm_cons, Permutation_cons_app. *)
+  - (** sauto use: List.app_comm_cons, Permutation_cons_app. *)
     simpl_sigma.
     rewrite List.app_comm_cons.
     apply Permutation_cons_app.
-    intuition. (* at this point "sauto" would of course also solve the
+    intuition. (** at this point "sauto" would of course also solve the
                   goal *)
 Qed.
 
@@ -252,9 +252,9 @@ Next Obligation.
   sauto.
 Qed.
 Next Obligation.
-  (* sauto. *)
+  (** sauto. *)
   program_simpl.
-  (* sauto use: @lem_split. *)
+  (** sauto use: @lem_split. *)
   use_lem_split.
 Qed.
 Next Obligation.
@@ -267,15 +267,15 @@ Next Obligation.
   sauto.
 Qed.
 Next Obligation.
-  (* simpl. *)
+  (** simpl. *)
   split.
   - sauto.
-  - (* simpl_sigma. *)
+  - (** simpl_sigma. *)
     time hauto use: Permutation_app, Permutation_sym, perm_trans.
-    (* "hauto" is just "sauto inv: - ctrs: -" *)
+    (** "hauto" is just "sauto inv: - ctrs: -" *)
     Undo.
     time qauto use: Permutation_app, Permutation_sym, perm_trans.
-    (* "qauto" is "sauto" with various options which make it much
+    (** "qauto" is "sauto" with various options which make it much
        weaker but typically much faster *)
 Qed.
 Next Obligation.

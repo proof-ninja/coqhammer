@@ -1,8 +1,8 @@
-(* Tail-recursive reverse *)
+(** Tail-recursive reverse *)
 
 From Hammer Require Import Tactics.
 From Hammer Require Import Hints.
-(* The Hints module provides the following rewrite hint databases:
+(** The Hints module provides the following rewrite hint databases:
    shints, slist, sbool, sarith, szarith. *)
 
 Require List.
@@ -34,20 +34,20 @@ Qed.
 Lemma lem_itrev' {A} :
   forall l acc : list A, itrev l acc = itrev l [] ++ acc.
 Proof.
-  (* induction l; sauto db: slist. *)
+  (** induction l; sauto db: slist. *)
   induction l; ssimpl.
-  (* Simplification tactics in the order of increasing strength and
+  (** Simplification tactics in the order of increasing strength and
      decreasing speed: "simp_hyps", "sintuition", "qsimpl",
      "ssimpl". *)
-  (* The simplification tactics may change the context in an
+  (** The simplification tactics may change the context in an
      unpredictable manner and introduce automatically generated
      hypothesis names. *)
   rewrite IHl.
-  (* rewrite IHl. *)
+  (** rewrite IHl. *)
   pattern (itrev l [a]).
   rewrite IHl.
-  sauto db: slist. (* The "slist" database contains "List.app_assoc" *)
-  (* "sauto" is currently not very good at rewriting - it just tries
+  sauto db: slist. (** The "slist" database contains "List.app_assoc" *)
+  (** "sauto" is currently not very good at rewriting - it just tries
      to apply the "rewrite" tactic *)
 
   Restart.
@@ -97,8 +97,8 @@ Qed.
 
 Lemma lem_rev_rev' {A} : forall l : list A, rev (rev l) = l.
 Proof.
-  (* induction l; sauto use: @lem_itrev, @lem_rev_app unfold: rev. *)
-  (* induction l; sauto limit: 2000 use: @lem_itrev, @lem_rev_app unfold: rev. *)
+  (** induction l; sauto use: @lem_itrev, @lem_rev_app unfold: rev. *)
+  (** induction l; sauto limit: 2000 use: @lem_itrev, @lem_rev_app unfold: rev. *)
   induction l as [|x l ?].
   - reflexivity.
   - sauto use: (lem_itrev l [x]), (lem_rev_app (itrev l []) [x]) unfold: rev.

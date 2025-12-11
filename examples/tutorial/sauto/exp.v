@@ -1,8 +1,8 @@
-(* Dependently typed expressions *)
+(** Dependently typed expressions *)
 
 From Hammer Require Import Tactics.
 
-Require Import Program.Equality. (* for "depind" and "depelim" *)
+Require Import Program.Equality. (** for "depind" and "depelim" *)
 Require Import Arith.
 Require Import String.
 
@@ -51,7 +51,7 @@ Lemma lem_plus : forall s e1 e2,
   eval s (simp_plus e1 e2) = eval s e1 + eval s e2.
 Proof.
   time (depind e1; depelim e2; sauto).
-  (* Undo.
+  (** Undo.
     time (depind e1; depelim e2; sauto l: on). *)
 Qed.
 
@@ -60,7 +60,7 @@ Lemma lem_plus' : forall s e1 e2,
 Proof.
   Fail depind e1; sauto.
   time (depind e1; sauto dep: on).
-  (* "dep: on" instructs "sauto" to use the "depelim" tactic for
+  (** "dep: on" instructs "sauto" to use the "depelim" tactic for
      inversion. This may be slower and it will make your proof depend
      on axioms (equivalent to Uniqueness of Identity Proofs). *)
 Qed.

@@ -1,13 +1,13 @@
 From Hammer Require Import Tactics.
-From Hammer Require Import Hammer. (* for `hammer` *)
+From Hammer Require Import Hammer. (** for `hammer` *)
 Require Import Program.
 Require Import Arith.
 Require Import Lia.
 
-(* Is "d" a common divisor of "a" and "b"? *)
+(** Is "d" a common divisor of "a" and "b"? *)
 Definition is_cd d a b :=
   a mod d = 0 /\ b mod d = 0.
-(* Is "d" the greatest common divisor of "a" and "b"? *)
+(** Is "d" the greatest common divisor of "a" and "b"? *)
 Definition is_gcd d a b :=
   is_cd d a b /\ forall d', is_cd d' a b -> d' <= d.
 
@@ -23,11 +23,11 @@ Proof.
       Fail subst; reflexivity.
       admit.
     + assert (Hc1: exists c1, b = d * c1).
-      { (* hammer. *) strivial use: Nat.mod_divides. }
+      { (** hammer. *) strivial use: Nat.mod_divides. }
       assert (Hc2: exists c2, a mod b = d * c2).
-      { (* hammer. *) strivial use: Nat.mod_divides. }
+      { (** hammer. *) strivial use: Nat.mod_divides. }
       assert (Hc3: exists c3, a = b * c3 + a mod b).
-      { (* hammer. *)
+      { (** hammer. *)
         (** RV yoshihiro503: ↓ syntax error *)
         (*srun eauto use: Nat.div_mod.*)
         admit.
@@ -56,9 +56,9 @@ Proof.
       destruct Hc2 as [c2 H2].
       destruct Hc3 as [c3 H3].
       subst.
-      (* hammer. *)
+      (** hammer. *)
       clear - Hb Hd.
-      (* Coq.Arith.PeanoNat.Nat.mod_mul,
+      (** Coq.Arith.PeanoNat.Nat.mod_mul,
       Coq.Arith.PeanoNat.Nat.mul_mod_distr_l,
       Coq.Arith.PeanoNat.Nat.mul_comm *)
       rewrite Nat.mul_mod_distr_l; [| lia | lia ].
@@ -75,25 +75,25 @@ Program Fixpoint gcd (a b : nat) {measure b} :
 Next Obligation.
   unfold is_gcd, is_cd.
   sintuition.
-  - (* hammer. *)
+  - (** hammer. *)
     sfirstorder use: Nat.mod_same.
-  - (* hammer. *)
-    (* time sauto. *)
-    (* Set Hammer SAutoLimit 0.
+  - (** hammer. *)
+    (** time sauto. *)
+    (** Set Hammer SAutoLimit 0.
     hammer. *)
     sfirstorder use: Nat.mod_0_l.
-  - (* hammer. *)
+  - (** hammer. *)
     qauto use: Nat.add_pos_cases, Nat.le_gt_cases,
                Nat.mod_small, Nat.neq_0_lt_0.
 Qed.
 Next Obligation.
-  (* hammer. *)
+  (** hammer. *)
   (** RV yoshihiro503 : Syntax Error *)
   (** srun eauto use: Nat.mod_upper_bound. *)
 Admitted.
 Next Obligation.
   simpl_sigma.
-  (* hammer. *)
+  (** hammer. *)
   apply lem_gcd_step; [ lia | apply i; lia ].
 Qed.
 

@@ -1,17 +1,17 @@
-(* "hammer" demo *)
+(** "hammer" demo *)
 
-(* The "hammer" tactic works in three phases: *)
-(* 1. Machine-learning premise selection. *)
-(* 2. Translation to automated theorem provers (ATPs). *)
-(* 3. Proof search in the logic of Coq with the dependencies returned
+(** The "hammer" tactic works in three phases: *)
+(** 1. Machine-learning premise selection. *)
+(** 2. Translation to automated theorem provers (ATPs). *)
+(** 3. Proof search in the logic of Coq with the dependencies returned
    by the ATPs. *)
 
-(* CoqHammer uses classical first-order ATPs just to select the right
+(** CoqHammer uses classical first-order ATPs just to select the right
    dependencies. The goal must then be re-proven from scratch in the
    intuitionistic logic of Coq, using the dependencies returned by the
    ATPs. *)
 
-(* The target external tools of CoqHammer are general first-order
+(** The target external tools of CoqHammer are general first-order
    ATPs, not SMT-solvers. CoqHammer can use some SMT-solvers because
    in practice they may often be used in the same way as general
    ATPs. But CoqHammer will never use any of the "modulo theory"
@@ -21,7 +21,7 @@
 
 From Hammer Require Import Hammer.
 
-(* To use the Hammer module which contains the "hammer" tactic you
+(** To use the Hammer module which contains the "hammer" tactic you
    need to install the full CoqHammer system:
 
    opam install coq-hammer
@@ -36,21 +36,21 @@ Require Import Arith.
 
 Lemma lem_odd : forall n : nat, Nat.Odd n \/ Nat.Odd (n + 1).
 Proof.
-  (* hammer. *)
+  (** hammer. *)
   hauto lq: on use: Nat.Odd_succ, Nat.Even_or_Odd, Nat.add_1_r.
 Qed.
 
 Lemma lem_even : forall n : nat, Nat.Even n \/ Nat.Even (n + 1).
 Proof.
-  (* predict 16. *)
-  (* hammer. *)
+  (** predict 16. *)
+  (** hammer. *)
   hauto lq: on use: Nat.add_1_r, Nat.Even_or_Odd, Nat.Even_succ.
 Qed.
 
 Lemma lem_pow : forall n : nat, 3 * 3 ^ n = 3 ^ (n + 1).
 Proof.
   Fail sauto.
-  (* hammer. *)
+  (** hammer. *)
   hauto lq: on use: Nat.pow_succ_r, Nat.le_0_l, Nat.add_1_r.
 Qed.
 
@@ -63,20 +63,20 @@ Lemma lem_incl_concat
     List.incl l n ->
     List.incl l (n ++ m) /\ List.incl l (m ++ n) /\ List.incl l (l ++ l).
 Proof.
-  (* hammer. *)
+  (** hammer. *)
   strivial use: List.incl_appr, List.incl_refl, List.incl_appl.
 Qed.
 
 Lemma lem_lst_1 : forall (A : Type) (l l' : list A),
   List.NoDup (l ++ l') -> List.NoDup l.
 Proof.
-  (* The "hammer" tactic can't do induction. If induction is necessary
+  (** The "hammer" tactic can't do induction. If induction is necessary
   to carry out the proof, then one needs to start the induction
   manually. *)
   induction l'.
-  - (* hammer. *)
+  - (** hammer. *)
     scongruence use: List.app_nil_end.
-  - (* hammer. *)
+  - (** hammer. *)
     (** RV yoshihiro503:
         Syntax error: [ltac_use_default] expected after [tactic] (in [tactic_command]). *)
     (** srun eauto use:  List.NoDup_remove_1.*)
@@ -95,7 +95,7 @@ Lemma lem_perm_0 {A} : forall (x y : A) l1 l2 l3,
     Permutation l1 (y :: l2) ->
     Permutation (x :: l1 ++ l3) (x :: y :: l2 ++ l3).
 Proof.
-  (* hammer. *)
+  (** hammer. *)
   hauto lq: on drew: off
     use: Permutation_app, List.app_comm_cons, Permutation_refl, perm_skip.
 Qed.
@@ -104,13 +104,13 @@ Lemma lem_perm_1 {A} : forall (x y : A) l1 l2 l3,
     Permutation l1 (y :: l2) ->
     Permutation (x :: l1 ++ l3) (y :: x :: l2 ++ l3).
 Proof.
-  (* hammer. *)
+  (** hammer. *)
   (** RV yoshihiro503 : Syntax Error *)
 (**  srun eauto use: @lem_perm_0, perm_skip, Permutation_Add,
     Permutation_trans, Permutation_sym, perm_swap unfold: app.
   Undo.
 *)
-  (* Occasionally, some of the returned dependencies are not necessary. *)
+  (** Occasionally, some of the returned dependencies are not necessary. *)
   (** RV yoshihiro503 : Syntax Error *)
 (**  srun eauto use: @lem_perm_0, Permutation_trans, perm_swap.
 *)
@@ -120,7 +120,7 @@ Proof.
   hammer. *)
 Admitted.
 
-(* A general advice: use "hammer" to prove entire lemmas which are
+(** A general advice: use "hammer" to prove entire lemmas which are
    stated separately. Using "hammer" to prove subgoals in a larger
    proof is less effective. One reason is that the machine-learning
    premise selection can get confused by the presence of unnecessary
@@ -129,8 +129,8 @@ Admitted.
 Lemma lem_perm_2 : forall (x : nat) l1 l2 l3,
     Permutation (x :: l1) l2 -> Permutation (x :: l3 ++ l1) (l3 ++ l2).
 Proof.
-  (* hammer. *)
-  (* If an ATP returns at least 8 dependencies, then "hammer" tries to
+  (** hammer. *)
+  (** If an ATP returns at least 8 dependencies, then "hammer" tries to
      automatically minimize the number of dependencies by repeatedly
      running the ATPs with the returned dependencies as long as some
      ATP returns fewer dependencies. *)
@@ -143,7 +143,7 @@ Lemma lem_perm_3 : forall (x y : nat) l1 l2 l3,
     Permutation (x :: l1) l2 ->
     Permutation (x :: y :: l1 ++ l3) (y :: l2 ++ l3).
 Proof.
-  (* hammer. *)
+  (** hammer. *)
   (** RV yoshihiro503 : Syntax Error *)
 (**  srun eauto use: @lem_perm_1, Permutation_sym. *)
 Admitted.
@@ -152,7 +152,7 @@ Lemma lem_perm_4 : forall (x y : nat) l1 l2 l3,
     Permutation (x :: l1) l2 ->
     Permutation (x :: y :: l3 ++ l1) (y :: l3 ++ l2).
 Proof.
-  (* hammer. *)
+  (** hammer. *)
   intros.
   rewrite List.app_comm_cons.
   pattern (y :: l3 ++ l2).
